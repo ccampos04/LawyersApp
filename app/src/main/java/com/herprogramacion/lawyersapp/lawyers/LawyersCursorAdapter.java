@@ -45,6 +45,15 @@ public class LawyersCursorAdapter extends CursorAdapter {
 
         // Setup.
         nameText.setText(name);
+        String path = "";
+        if(avatarUri.contains("/"))
+        {
+            path = avatarUri;
+        }
+        else
+        {
+            path = "file:///android_asset/" + avatarUri;
+        }
         Glide
                 .with(context)
                 .load(Uri.parse("file:///android_asset/" + avatarUri))

@@ -110,15 +110,27 @@ public class LawyerDetailFragment extends Fragment {
     }
 
     private void showLawyer(Lawyer lawyer) {
+        String path = "";
+        if(lawyer.getAvatarUri().contains("/"))
+        {
+            path = lawyer.getAvatarUri();
+        }
+        else
+        {
+            path = "file:///android_asset/" + lawyer.getAvatarUri();
+        }
+        Toast.makeText(getContext(),path, Toast.LENGTH_LONG).show();
         mCollapsingView.setTitle(lawyer.getName());
         Glide.with(this)
-                .load(Uri.parse("file:///android_asset/" + lawyer.getAvatarUri()))
+                .load(Uri.parse(path))
                 .centerCrop()
                 .into(mAvatar);
         mPhoneNumber.setText(lawyer.getPhoneNumber());
         mSpecialty.setText(lawyer.getSpecialty());
         mBio.setText(lawyer.getBio());
     }
+
+
 
     private void showEditScreen() {
         Intent intent = new Intent(getActivity(), AddEditLawyerActivity.class);

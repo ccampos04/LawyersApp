@@ -11,7 +11,7 @@ public class AddEditLawyerActivity extends AppCompatActivity {
 
     public static final int REQUEST_ADD_LAWYER = 1;
 
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

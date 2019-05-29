@@ -2,9 +2,13 @@ package com.herprogramacion.lawyersapp.addeditlawyer;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -13,11 +17,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.herprogramacion.lawyersapp.R;
 import com.herprogramacion.lawyersapp.data.Lawyer;
 import com.herprogramacion.lawyersapp.data.LawyersDbHelper;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Vista para creación/edición de un abogado
@@ -38,6 +45,9 @@ public class AddEditLawyerFragment extends Fragment {
     private TextInputLayout mPhoneNumberLabel;
     private TextInputLayout mSpecialtyLabel;
     private TextInputLayout mBioLabel;
+    private ImageButton imgBtnGuardarFoto;
+
+    private String pathImage;
 
 
     public AddEditLawyerFragment() {
@@ -75,6 +85,14 @@ public class AddEditLawyerFragment extends Fragment {
         mPhoneNumberLabel = (TextInputLayout) root.findViewById(R.id.til_phone_number);
         mSpecialtyLabel = (TextInputLayout) root.findViewById(R.id.til_specialty);
         mBioLabel = (TextInputLayout) root.findViewById(R.id.til_bio);
+        imgBtnGuardarFoto = (ImageButton)root.findViewById(R.id.imgBtnFoto);
+        imgBtnGuardarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFolder();
+            }
+        });
+
 
         // Eventos
         mSaveButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +110,20 @@ public class AddEditLawyerFragment extends Fragment {
         }
 
         return root;
+    }
+
+    public void openFolder(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/");
+        startActivityForResult(Intent.createChooser(intent, "Seleccionar imagen"), 10);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            pathImage = data.getData().toString(); //obtener el uri content
+        }
     }
 
     private void loadLawyer() {
@@ -131,7 +163,7 @@ public class AddEditLawyerFragment extends Fragment {
             return;
         }
 
-        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, "");
+        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, pathImage);
 
         new AddEditLawyerTask().execute(lawyer);
 
@@ -142,7 +174,7 @@ public class AddEditLawyerFragment extends Fragment {
             showAddEditError();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else {
-            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().setResult(RESULT_OK);
         }
 
         getActivity().finish();
@@ -158,6 +190,7 @@ public class AddEditLawyerFragment extends Fragment {
         mPhoneNumberField.setText(lawyer.getPhoneNumber());
         mSpecialtyField.setText(lawyer.getSpecialty());
         mBioField.setText(lawyer.getBio());
+
     }
 
     private void showLoadError() {
