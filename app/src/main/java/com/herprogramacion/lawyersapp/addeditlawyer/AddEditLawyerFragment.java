@@ -2,17 +2,28 @@ package com.herprogramacion.lawyersapp.addeditlawyer;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.herprogramacion.lawyersapp.R;
@@ -28,7 +39,7 @@ public class AddEditLawyerFragment extends Fragment {
     private String mLawyerId;
 
     private LawyersDbHelper mLawyersDbHelper;
-
+    final int COD_SELECCIONA=10;
     private FloatingActionButton mSaveButton;
     private TextInputEditText mNameField;
     private TextInputEditText mPhoneNumberField;
@@ -38,6 +49,9 @@ public class AddEditLawyerFragment extends Fragment {
     private TextInputLayout mPhoneNumberLabel;
     private TextInputLayout mSpecialtyLabel;
     private TextInputLayout mBioLabel;
+    private Button btn;
+    Uri miPath;
+    String path;
 
 
     public AddEditLawyerFragment() {
@@ -75,6 +89,13 @@ public class AddEditLawyerFragment extends Fragment {
         mPhoneNumberLabel = (TextInputLayout) root.findViewById(R.id.til_phone_number);
         mSpecialtyLabel = (TextInputLayout) root.findViewById(R.id.til_specialty);
         mBioLabel = (TextInputLayout) root.findViewById(R.id.til_bio);
+        btn = (Button) root.findViewById(R.id.idBotonF);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cargarImagen();
+            }
+        });
 
         // Eventos
         mSaveButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +113,38 @@ public class AddEditLawyerFragment extends Fragment {
         }
 
         return root;
+    }
+
+    private void cargarImagen() {
+        final CharSequence[] opciones={"Tomar Foto","Cargar Imagen","Cancelar"};
+        final AlertDialog.Builder alertOpciones=new AlertDialog.Builder(getContext());
+        alertOpciones.setTitle("Seleccione una Opción");
+        alertOpciones.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (opciones[i].equals("Tomar Foto")){
+                    //tomarFotografia();
+                }else{
+                    if (opciones[i].equals("Cargar Imagen")){
+                        Intent intent=new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/");
+                        startActivityForResult(intent.createChooser(intent,"Seleccione la Aplicación"),COD_SELECCIONA);
+                    }else{
+                        dialogInterface.dismiss();
+                    }
+                }
+            }
+        });
+        alertOpciones.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==Activity.RESULT_OK){
+            miPath=data.getData();
+            //imagen.setImageURI(miPath);
+        }
     }
 
     private void loadLawyer() {
@@ -130,9 +183,9 @@ public class AddEditLawyerFragment extends Fragment {
         if (error) {
             return;
         }
-
-        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, "");
-
+        Toast.makeText(getContext(), miPath.toString(),
+                Toast.LENGTH_LONG).show();
+        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, miPath.toString());
         new AddEditLawyerTask().execute(lawyer);
 
     }
@@ -158,6 +211,7 @@ public class AddEditLawyerFragment extends Fragment {
         mPhoneNumberField.setText(lawyer.getPhoneNumber());
         mSpecialtyField.setText(lawyer.getSpecialty());
         mBioField.setText(lawyer.getBio());
+
     }
 
     private void showLoadError() {
