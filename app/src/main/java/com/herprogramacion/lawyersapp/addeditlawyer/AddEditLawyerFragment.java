@@ -2,9 +2,12 @@ package com.herprogramacion.lawyersapp.addeditlawyer;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -39,7 +42,7 @@ public class AddEditLawyerFragment extends Fragment {
     private TextInputLayout mSpecialtyLabel;
     private TextInputLayout mBioLabel;
 
-
+    private Intent intent;
     public AddEditLawyerFragment() {
         // Required empty public constructor
     }
@@ -93,7 +96,14 @@ public class AddEditLawyerFragment extends Fragment {
 
         return root;
     }
-
+    private void onClick(View view){
+        cargarImagen();
+    }
+    private void cargarImagen(){
+        intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/");
+        startActivityForResult(intent.createChooser(intent,"Seleccione la aplicacion"),10);
+    }
     private void loadLawyer() {
         new GetLawyerByIdTask().execute();
     }
@@ -131,7 +141,7 @@ public class AddEditLawyerFragment extends Fragment {
             return;
         }
 
-        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, "");
+        Lawyer lawyer = new Lawyer(name, specialty, phoneNumber, bio, "in");
 
         new AddEditLawyerTask().execute(lawyer);
 
