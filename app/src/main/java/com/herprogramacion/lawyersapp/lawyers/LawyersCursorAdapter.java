@@ -19,7 +19,7 @@ import com.herprogramacion.lawyersapp.R;
 import com.herprogramacion.lawyersapp.data.LawyersContract.LawyerEntry;
 
 /**
- * Adaptador de abogados
+ * Adaptador de abogados modificado
  */
 public class LawyersCursorAdapter extends CursorAdapter {
     public LawyersCursorAdapter(Context context, Cursor c) {
