@@ -111,10 +111,17 @@ public class LawyerDetailFragment extends Fragment {
 
     private void showLawyer(Lawyer lawyer) {
         mCollapsingView.setTitle(lawyer.getName());
-        Glide.with(this)
-                .load(Uri.parse("file:///android_asset/" + lawyer.getAvatarUri()))
-                .centerCrop()
-                .into(mAvatar);
+        if (lawyer.getAvatarUri().contains("/")) {
+            Glide.with(this)
+                    .load(lawyer.getAvatarUri())
+                    .centerCrop()
+                    .into(mAvatar);
+        } else {
+            Glide.with(this)
+                    .load(Uri.parse("file:///android_asset/" + lawyer.getAvatarUri()))
+                    .centerCrop()
+                    .into(mAvatar);
+        }
         mPhoneNumber.setText(lawyer.getPhoneNumber());
         mSpecialty.setText(lawyer.getSpecialty());
         mBio.setText(lawyer.getBio());

@@ -19,7 +19,7 @@ import com.herprogramacion.lawyersapp.R;
 import com.herprogramacion.lawyersapp.data.LawyersContract.LawyerEntry;
 
 /**
- * Adaptador de abogados modificado
+ * Adaptador de abogados
  */
 public class LawyersCursorAdapter extends CursorAdapter {
     public LawyersCursorAdapter(Context context, Cursor c) {
@@ -44,10 +44,16 @@ public class LawyersCursorAdapter extends CursorAdapter {
         String avatarUri = cursor.getString(cursor.getColumnIndex(LawyerEntry.AVATAR_URI));
 
         // Setup.
+        String uri;
+        if (avatarUri.contains("/")) {
+            uri = avatarUri;
+        } else {
+            uri = Uri.parse("file:///android_asset/" + avatarUri).toString();
+        }
         nameText.setText(name);
         Glide
                 .with(context)
-                .load(Uri.parse("file:///android_asset/" + avatarUri))
+                .load(uri)
                 .asBitmap()
                 .error(R.drawable.ic_account_circle)
                 .centerCrop()
