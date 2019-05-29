@@ -19,7 +19,7 @@ import com.herprogramacion.lawyersapp.R;
 import com.herprogramacion.lawyersapp.data.LawyersContract.LawyerEntry;
 
 /**
- * Adaptador de abogados modificado
+ * Adaptador de abogados
  */
 public class LawyersCursorAdapter extends CursorAdapter {
     public LawyersCursorAdapter(Context context, Cursor c) {
@@ -44,22 +44,46 @@ public class LawyersCursorAdapter extends CursorAdapter {
         String avatarUri = cursor.getString(cursor.getColumnIndex(LawyerEntry.AVATAR_URI));
 
         // Setup.
-        nameText.setText(name);
-        Glide
-                .with(context)
-                .load(Uri.parse("file:///android_asset/" + avatarUri))
-                .asBitmap()
-                .error(R.drawable.ic_account_circle)
-                .centerCrop()
-                .into(new BitmapImageViewTarget(avatarImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable drawable
-                                = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        drawable.setCircular(true);
-                        avatarImage.setImageDrawable(drawable);
-                    }
-                });
+        if (!avatarUri.contains("/")) {
+            nameText.setText(name);
+            Glide
+
+                    .with(context)
+
+                    .load(Uri.parse("file:///android_asset/" + avatarUri))
+                    .asBitmap()
+                    .error(R.drawable.ic_account_circle)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(avatarImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable drawable
+                                    = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                            drawable.setCircular(true);
+                            avatarImage.setImageDrawable(drawable);
+                        }
+                    });
+        }
+        else{
+            nameText.setText(name);
+            Glide
+
+                    .with(context)
+
+                    .load(Uri.parse(avatarUri))
+                    .asBitmap()
+                    .error(R.drawable.ic_account_circle)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(avatarImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable drawable
+                                    = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                            drawable.setCircular(true);
+                            avatarImage.setImageDrawable(drawable);
+                        }
+                    });
+        }
 
     }
 

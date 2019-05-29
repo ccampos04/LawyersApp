@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,6 +7,20 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context=".addeditlawyer.AddEditLawyerFragment">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="160dp"
+        android:layout_height="137dp"
+        android:src="@android:drawable/ic_menu_report_image"
+        app:srcCompat="@drawable/ic_account_circle"
+        tools:srcCompat="@drawable/ic_account_circle" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="166dp"
+        android:layout_height="28dp"
+        android:src="@android:drawable/ic_menu_upload" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_name"
@@ -69,5 +84,6 @@
             android:inputType="text|textMultiLine"
             tools:text="@string/lorem" />
     </android.support.design.widget.TextInputLayout>
+
 
 </LinearLayout>
